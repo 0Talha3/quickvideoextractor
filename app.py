@@ -4,30 +4,25 @@ import os
 
 app = Flask(__name__)
 
-@app.route('/extract', methods=['GET', 'POST'])
+@app.route('/')
+def home():
+    return "Video Extractor API is running! Use /extract endpoint"
+
+@app.route('/extract', methods=['GET'])
 def extract():
     try:
-        # Handle both GET and POST requests
-        if request.method == 'GET':
-            url = request.args.get('url')
-        else:
-            url = request.json.get('url')
-        
+        url = request.args.get('url')
         if not url:
-            return jsonify({"error": "URL parameter is required"}), 400
-
+            return jsonify({"error": "Add ?url=YOUTUBE_URL to your request"}), 400
+            
         result = subprocess.run(
             ['yt-dlp', '-f', 'best', '-g', url],
             capture_output=True, text=True, timeout=30
         )
-        
         return jsonify({
             "stream_url": result.stdout.strip(),
             "error": result.stderr.strip()
         })
-        
-    except subprocess.TimeoutExpired:
-        return jsonify({"error": "Video extraction timed out"}), 504
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
