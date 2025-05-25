@@ -1,23 +1,21 @@
-from flask import Flask, request, jsonify
-import subprocess
-import os
-
-app = Flask(__name__)
-
-@app.route('/extract', methods=['POST'])
+@app.route('/extract', methods=['GET', 'POST'])  # Add 'GET' here
 def extract():
+    if request.method == 'GET':
+        url = request.args.get('url')  # For GET: ?url=YOUR_URL
+    else:
+        url = request.json.get('url')  # For POST
+    
+    if not url:
+        return jsonify({"error": "URL parameter missing"}), 400
+
     try:
-        url = request.json['url']
         result = subprocess.run(
             ['yt-dlp', '-f', 'best', '-g', url],
             capture_output=True, text=True
         )
         return jsonify({
-            'stream_url': result.stdout.strip(),
-            'error': result.stderr.strip()
+            "stream_url": result.stdout.strip(),
+            "error": result.stderr.strip()
         })
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+        return jsonify({"error": str(e)}), 500
