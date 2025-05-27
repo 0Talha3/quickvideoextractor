@@ -10,7 +10,6 @@ class VideoRequest(BaseModel):
 @app.post("/download")
 def download_video(req: VideoRequest):
     try:
-        # Run yt-dlp to get the direct video link
         result = subprocess.run(
             ["yt-dlp", "-g", req.url],
             capture_output=True,
