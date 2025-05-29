@@ -45,13 +45,16 @@ if "ERROR:" in result.stderr:
     }
 
 
-return {
-"status": "Download complete ✅",
-"file_url": f"/files/{video_id}.mp4"
-}
+ return {
+            "status": "Download complete ✅",
+            "file_url": f"/files/{video_id}.mp4"
+        }
 
-except Exception as e:
-return {"error": "Server crash", "details": str(e)}
+    except Exception as e:
+        return {
+            "error": "Server crash",
+            "details": str(e)
+        }
 
 # Serve the video files
 app.mount("/files", StaticFiles(directory="static"), name="static")
