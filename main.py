@@ -22,15 +22,19 @@ async def download_video(request: Request):
         video_id = str(uuid.uuid4())
         output_path = f"static/{video_id}.mp4"
 
-        result = subprocess.run(
+               result = subprocess.run(
             ["yt-dlp", "-f", "best", "-o", output_path, video_url],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True
         )
 
-       if "ERROR:" in result.stderr:
-    return {"error": "yt-dlp failed", "details": result.stderr}
+        # Only fail if real ERROR appears, not warnings
+        if "ERROR:" in result.stderr:
+            return {
+                "error": "yt-dlp failed",
+                "details": result.stderr
+            }
 
         return {
             "status": "Download complete ✅",
