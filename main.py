@@ -1,8 +1,7 @@
 from fastapi import FastAPI, Request, HTTPException
 import os
 
-app = FastAPI()  # ✅ This line defines 'app'
-
+app = FastAPI()
 API_KEY = os.getenv("API_KEY")
 
 @app.post("/download")
@@ -12,7 +11,4 @@ async def download_video(request: Request):
         raise HTTPException(status_code=403, detail="Invalid API Key ❌")
 
     data = await request.json()
-    video_url = data.get("url")
-
-    # Here you can put your yt-dlp code to download the video
-    return {"status": "Download started", "url": video_url}
+    return {"status": "Key accepted!", "url": data.get("url")}
