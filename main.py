@@ -39,10 +39,11 @@ text=True
 )
 
 if "ERROR:" in result.stderr:
-return {
-"error": "yt-dlp failed",
-"details": result.stderr
-}
+    return {
+        "error": "yt-dlp failed",
+        "details": result.stderr
+    }
+
 
 return {
 "status": "Download complete ✅",
