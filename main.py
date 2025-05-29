@@ -29,8 +29,8 @@ async def download_video(request: Request):
             text=True
         )
 
-        if result.returncode != 0:
-            return {"error": "yt-dlp failed", "details": result.stderr}
+       if "ERROR:" in result.stderr:
+    return {"error": "yt-dlp failed", "details": result.stderr}
 
         return {
             "status": "Download complete ✅",
