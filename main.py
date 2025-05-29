@@ -13,23 +13,23 @@ async def download_video(request: Request):
     if client_key != API_KEY:
         raise HTTPException(status_code=403, detail="Invalid API Key ❌")
 
-    try:
+        try:
         data = await request.json()
         video_url = data.get("url")
+
         if not video_url:
             return {"error": "No video URL provided"}
 
         video_id = str(uuid.uuid4())
         output_path = f"static/{video_id}.mp4"
 
-               result = subprocess.run(
+        result = subprocess.run(
             ["yt-dlp", "-f", "best", "-o", output_path, video_url],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True
         )
 
-        # Only fail if real ERROR appears, not warnings
         if "ERROR:" in result.stderr:
             return {
                 "error": "yt-dlp failed",
@@ -42,7 +42,7 @@ async def download_video(request: Request):
         }
 
     except Exception as e:
-        return {"error": f"Server crash", "details": str(e)}
+        return {"error": "Server crash", "details": str(e)}
 
 # Serve the video files
 app.mount("/files", StaticFiles(directory="static"), name="static")
