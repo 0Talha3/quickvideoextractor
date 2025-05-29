@@ -1,20 +1,11 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
-import subprocess
+import os
+from fastapi import Request, HTTPException
 
-app = FastAPI()
-
-class VideoRequest(BaseModel):
-    url: str
-
+API_KEY = os.getenv("API_KEY")
 @app.post("/download")
-def download_video(req: VideoRequest):
-    try:
-        result = subprocess.run(
-            ["yt-dlp", "-g", req.url],
-            capture_output=True,
-            text=True
-        )
-        return {"video_url": result.stdout.strip()}
-    except Exception as e:
-        return {"error": str(e)}
+async def download_video(request: Request):
+    client_key = request.headers.get("X-API-KEY")
+    if client_key != API_KEY:
+        raise HTTPException(status_code=403, detail="Invalid API Key ❌")
+    
+    # your existing video download code here
