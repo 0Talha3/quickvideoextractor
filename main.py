@@ -38,7 +38,7 @@ async def download_video(request: Request):
         }
 
     except Exception as e:
-        return {"error": f"Server crash", "details": str(e)}"
+        return {"error": f"Server crash", "details": str(e)}
 
 # Serve the video files
 app.mount("/files", StaticFiles(directory="static"), name="static")
