@@ -9,16 +9,24 @@ API_KEY = os.getenv("API_KEY")
 
 @app.post("/download")
 async def download_video(request: Request):
-client_key = request.headers.get("X-API-KEY")
-if client_key != API_KEY:
-raise HTTPException(status_code=403, detail="Invalid API Key ❌")
+    client_key = request.headers.get("X-API-KEY")
+    
+    if client_key != API_KEY:
+        raise HTTPException(status_code=403, detail="Invalid API Key ❌")
 
-try:
-data = await request.json()
-video_url = data.get("url")
+    try:
+        data = await request.json()
+        video_url = data.get("url")
 
-if not video_url:
-return {"error": "No video URL provided"}
+        if not video_url:
+            return {"error": "No video URL provided"}
+
+        # yt-dlp logic here, also indented
+        # ...
+
+    except Exception as e:
+        return {"error": "Server crash", "details": str(e)}
+
 
 video_id = str(uuid.uuid4())
 output_path = f"static/{video_id}.mp4"
